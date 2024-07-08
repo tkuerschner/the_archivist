@@ -1,0 +1,20 @@
+# The Archivist
+
+The Archivist is a tool for archiving large amount files in a folder and optionally deleting them after archiving. It provides various options for archiving files based on different criteria.
+
+## Features
+
+- Archive files in a folder
+- Delete files after archiving
+- Archive files by file type
+- Archive all files in one archive
+- Archive separate archives for each file type
+- Select specific file types for archiving
+
+## Dependencies
+
+The Archivist uses the following dependencies:
+
+- `chrono` for date and time manipulation
+- `zip` for creating zip archives
+
