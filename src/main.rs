@@ -20,7 +20,7 @@ fn main() {
     println!("\nAuthor: Tobias Kürschner - 2024\n");
     println!("This tool will archive files in a folder and optionally delete them after archiving");
     println!("Folders can be archived entirely or by file type\n");
-    println!("For more information visit:");
+    println!("For more information visit: https://github.com/tkuerschner/the_archivist");
 
     print!("\nPlease enter the folder location: ");
     io::stdout().flush().unwrap();
