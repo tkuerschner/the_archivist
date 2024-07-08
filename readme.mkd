@@ -2,6 +2,17 @@
 
 The Archivist is a tool for archiving large amount files in a folder and optionally deleting them after archiving. It provides various options for archiving files based on different criteria.
 
+## Usage
+
+1. Use binary/the_archivist.exe
+
+-OR-
+
+1. Clone the repository: `git clone https://github.com/tkuerschner/the_archivist.git`
+2. Navigate to the project directory: `cd the_archivist`
+3. Build the project: `cargo build`
+4. Run the program: `cargo run`
+
 ## Features
 
 - Archive files in a folder
@@ -17,4 +28,5 @@ The Archivist uses the following dependencies:
 
 - `chrono` for date and time manipulation
 - `zip` for creating zip archives
+
 
