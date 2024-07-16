@@ -11,18 +11,26 @@ use chrono::Timelike;
 
 
 fn main() {
+    //give the console print a color blue
+    println!("\x1b[34m");
+    
     println!(r" _____ _               _             _     _       _     _     _ ");
     println!(r"|_   _| |__   ___     / \   _ __ ___| |__ (_)_   _(_)___| |_  | |");
     println!(r"  | | | '_ \ / _ \   / _ \ | '__/ __| '_ \| \ \ / / / __| __| | |");
     println!(r"  | | | | | |  __/  / ___ \| | | (__| | | | |\ V /| \__ \ |_  |_|");
     println!(r"  |_| |_| |_|\___| /_/   \_\_|  \___|_| |_|_| \_/ |_|___/\__| (_)");
 
-    println!("Build: 1.0.1");
+    //give the console print a color gray
+    println!("\x1b[90m");
+
+    println!("\nBuild: 1.0.1");
     println!("\nAuthor: Tobias Kuerschner - 2024\n");
     println!("This tool will archive files in a folder and optionally delete them after archiving");
     println!("Folders can be archived entirely or by file type\n");
     println!("For more information visit: https://github.com/tkuerschner/the_archivist");
 
+    //give the console print a color white
+    println!("\x1b[37m");
     print!("\nPlease enter the folder location: ");
     io::stdout().flush().unwrap();
     let mut folder_location = String::new();
@@ -109,7 +117,8 @@ fn main() {
         println!("-----------------------------------------------\n");
     }
 
-    println!("Filetypes detected: {:?}", file_endings);
+    println!("Filetypes detected:\x1b[96m {:?}", file_endings);
+    println!("\x1b[37m");
     println!("-----------------------------------------------\n");
 
     //display the amount of files for each file type
@@ -125,7 +134,7 @@ fn main() {
                 }
             }
         }
-        println!("Number of [*.{}] files in the folder [{}]\n", file_ending, file_count);
+        println!("Number of\x1b[96m [*.{}]\x1b[37m files in the folder [{}]\n", file_ending, file_count);
     }
 
     println!("Choose an option: ");
@@ -210,7 +219,7 @@ fn main() {
             eprintln!("Error finishing zip file {}: {}", zip_path.display(), err);
         }
         println!("-----------------------------------------------");
-        println!("Archive created: {}", zip_path.display());
+        println!("Archive created: \x1b[96m{}\x1b[37m", zip_path.display());
         println!("-----------------------------------------------");
         //ask the user if they want to delete the files after archiving
         println!("Do you want to delete the files after archiving? (y/n)");
@@ -231,7 +240,7 @@ fn main() {
 
         if delete_option == "y" {
 
-            println!("Warning - This action is irreversible!");
+            println!("\x1b[31m Warning - This action is irreversible!\x1b[37m");
             println!("-----------------------------------------------");
             println!("Are you sure you want to delete the files? (y/n)");
             let mut delete_confirmation = String::new();
@@ -319,7 +328,7 @@ fn main() {
             }
 
             println!("-----------------------------------------------");
-            println!("Archive created: {}", zip_path.display());
+            println!("Archive created: \x1b[96m{}\x1b[37m", zip_path.display());
             println!("-----------------------------------------------");
         }
 
@@ -343,7 +352,7 @@ fn main() {
             }
   
           if delete_option == "y" {
-              println!("Warning - This action is irreversible!");
+              println!("\x1b[31m Warning - This action is irreversible!\x1b[37m");
               println!("-----------------------------------------------");
               println!("Are you sure you want to delete the files? (y/n)");
               let mut delete_confirmation = String::new();
@@ -466,7 +475,7 @@ fn main() {
                 eprintln!("Error finishing zip file {}: {}", zip_path.display(), err);
             }
             println!("-----------------------------------------------");
-            println!("Archive created: {}", zip_path.display());
+            println!("Archive created: \x1b[96m{}\x1b[37m", zip_path.display());
             println!("-----------------------------------------------");
         }
 
@@ -488,7 +497,7 @@ fn main() {
         }
 
         if delete_option == "y" {
-            println!("Warning - This action is irreversible!");
+            println!("\x1b[31m Warning - This action is irreversible!\x1b[37m");
             println!("-----------------------------------------------");
             println!("Are you sure you want to delete the files? (y/n)");
             let mut delete_confirmation = String::new();
