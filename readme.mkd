@@ -22,6 +22,10 @@ The Archivist is a tool for archiving large amount files in a folder and optiona
 - Archive separate archives for each file type
 - Select specific file types for archiving
 
+## Notes
+
+Binary files as well as hidden and dotfiles (e.g.: .gitignore)  will be ignored in the archiving process.
+
 ## Dependencies
 
 The Archivist uses the following dependencies:
