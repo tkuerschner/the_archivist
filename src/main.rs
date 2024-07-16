@@ -17,6 +17,7 @@ fn main() {
     println!(r"  | | | | | |  __/  / ___ \| | | (__| | | | |\ V /| \__ \ |_  |_|");
     println!(r"  |_| |_| |_|\___| /_/   \_\_|  \___|_| |_|_| \_/ |_|___/\__| (_)");
 
+    println!("Build: 1.0.1");
     println!("\nAuthor: Tobias Kuerschner - 2024\n");
     println!("This tool will archive files in a folder and optionally delete them after archiving");
     println!("Folders can be archived entirely or by file type\n");
@@ -75,13 +76,34 @@ fn main() {
         }
     }
 
+    // create list of files that should always be ignored
+    // ignore the executable file
+    let mut ignore_files = Vec::new();
+    ignore_files.push("the_archivist.exe".to_string());
+    //ignore everything that starts with a dot
+    for entry in fs::read_dir(&folder_location).unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+        if let Some(file_name) = path.file_name() {
+            if file_name.to_str().unwrap().starts_with(".") {
+                ignore_files.push(file_name.to_str().unwrap().to_string());
+            }
+        }
+    }
+  
+
     let archive_folder = Path::new(&folder_location).join("archive");
         if let Err(err) = fs::create_dir_all(&archive_folder) {
             eprintln!("Error creating archive directory: {}", err);
             std::process::exit(1);
         }
 
-
+    //if there is an exe in the file endings, remove it
+    if let Some(index) = file_endings.iter().position(|x| x == "exe") {
+        file_endings.remove(index);
+        println!("Binary files detected, excluding them from archiving");
+        println!("-----------------------------------------------\n");
+    }
 
     println!("Filetypes detected: {:?}", file_endings);
     println!("-----------------------------------------------\n");
@@ -152,6 +174,10 @@ fn main() {
             let path = entry.path();
             let file_name = path.file_name().unwrap().to_str().unwrap();
 
+            if ignore_files.contains(&file_name.to_string()) {
+                continue;
+            }
+
             if let Err(err) = zip.start_file(file_name, options) {
                 eprintln!("Error starting file in zip {}: {}", file_name, err);
                 continue;
@@ -160,7 +186,7 @@ fn main() {
             let mut file = match fs::File::open(&path) {
                 Ok(file) => file,
                 Err(_err) => {
-                  //  eprintln!("Error opening file {}: {}", path.display(), err);
+                    //  eprintln!("Error opening file {}: {}", path.display(), err);
                     continue;
                 }
             };
@@ -255,6 +281,10 @@ fn main() {
                 if let Some(extension) = path.extension() {
                     if extension.to_str().unwrap() == file_ending {
                         let file_name = path.file_name().unwrap().to_str().unwrap();
+
+                        if ignore_files.contains(&file_name.to_string()) {
+                            continue;
+                        }                      
                         if let Err(err) = zip.start_file(file_name, options) {
                             eprintln!("Error starting file in zip {}: {}", file_name, err);
                             continue;
@@ -269,6 +299,7 @@ fn main() {
                         if let Err(err) = io::copy(&mut file, &mut zip) {
                             eprintln!("Error copying file {} to zip: {}", path.display(), err);
                         }
+                     
                     }
                 }
             }
@@ -276,6 +307,7 @@ fn main() {
             if let Err(err) = zip.finish() {
                 eprintln!("Error finishing zip file {}: {}", zip_path.display(), err);
             }
+
             println!("-----------------------------------------------");
             println!("Archive created: {}", zip_path.display());
             println!("-----------------------------------------------");
@@ -360,7 +392,7 @@ fn main() {
             let mut file_endings_input2: String = String::new();
             std::io::stdin().read_line(&mut file_endings_input2).unwrap();
             file_endings_input2 = file_endings_input2.trim().to_string();
-            let file_endings_input: Vec<String> = file_endings_input2.split(',').map(|s| s.trim().to_string()).collect();
+            file_endings_input = file_endings_input2.split(',').map(|s| s.trim().to_string()).collect();
             println!("File endings input: {:?}", file_endings_input);
 
             valid_input = true;
@@ -479,4 +511,22 @@ fn main() {
             }
         }
     }
+
+    // if any ignore_files were found, display them
+
+    if !ignore_files.is_empty() {
+        println!("-----------------------------------------------");
+        println!("Files that were ignored: {:?}", ignore_files);
+        println!("-----------------------------------------------");
+    }
+
+    //keep the program running until the user presses enter
+    println!("Press enter to exit");
+    let mut exit = String::new();
+    std::io::stdin().read_line(&mut exit).unwrap();
+    
+
+    println!("Exiting...");
+
+
 }
