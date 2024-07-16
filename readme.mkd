@@ -28,9 +28,8 @@ Binary files as well as hidden and dotfiles (e.g.: .gitignore)  will be ignored 
 
 ## Dependencies
 
-The Archivist uses the following dependencies:
-
 - `chrono` for date and time manipulation
 - `zip` for creating zip archives
+- `colored` for adding colors to the output
 
 
