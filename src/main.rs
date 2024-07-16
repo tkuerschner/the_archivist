@@ -11,6 +11,9 @@ use chrono::Timelike;
 
 
 fn main() {
+
+    colored::control::set_virtual_terminal(true).unwrap();
+
     //give the console print a color blue
     println!("\x1b[34m");
     
