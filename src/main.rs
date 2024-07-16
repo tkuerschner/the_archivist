@@ -76,6 +76,10 @@ fn main() {
         }
     }
 
+    //ignore subfolders
+    file_endings.retain(|x| x != "");
+
+
     // create list of files that should always be ignored
     // ignore the executable file
     let mut ignore_files = Vec::new();
@@ -148,6 +152,7 @@ fn main() {
     }
 
     if option == "1" {
+
     
         let now = Local::now();
         let zip_name = format!(
@@ -173,6 +178,11 @@ fn main() {
             let entry = entry.unwrap();
             let path = entry.path();
             let file_name = path.file_name().unwrap().to_str().unwrap();
+
+            //ignore subfolders
+            if path.is_dir() {
+                continue;
+            }
 
             if ignore_files.contains(&file_name.to_string()) {
                 continue;
