@@ -16,18 +16,18 @@ fn main() {
 
     //give the console print a color blue
     println!("\x1b[34m");
-    
-    println!(r" _____ _               _             _     _       _     _     _ ");
-    println!(r"|_   _| |__   ___     / \   _ __ ___| |__ (_)_   _(_)___| |_  | |");
-    println!(r"  | | | '_ \ / _ \   / _ \ | '__/ __| '_ \| \ \ / / / __| __| | |");
-    println!(r"  | | | | | |  __/  / ___ \| | | (__| | | | |\ V /| \__ \ |_  |_|");
-    println!(r"  |_| |_| |_|\___| /_/   \_\_|  \___|_| |_|_| \_/ |_|___/\__| (_)");
+    //
+    //println!(r" _____ _               _             _     _       _     _     _ ");
+    //println!(r"|_   _| |__   ___     / \   _ __ ___| |__ (_)_   _(_)___| |_  | |");
+    //println!(r"  | | | '_ \ / _ \   / _ \ | '__/ __| '_ \| \ \ / / / __| __| | |");
+    //println!(r"  | | | | | |  __/  / ___ \| | | (__| | | | |\ V /| \__ \ |_  |_|");
+    //println!(r"  |_| |_| |_|\___| /_/   \_\_|  \___|_| |_|_| \_/ |_|___/\__| (_)");
 
     //give the console print a color gray
     println!("\x1b[90m");
 
-    println!("\nBuild: 1.0.1");
-    println!("\nAuthor: Tobias Kuerschner - 2024\n");
+    println!("\nBuild: 1.0.2");
+    //println!("\n2024\n");
     println!("This tool will archive files in a folder and optionally delete them after archiving");
     println!("Folders can be archived entirely or by file type\n");
     println!("For more information visit: https://github.com/tkuerschner/the_archivist");
