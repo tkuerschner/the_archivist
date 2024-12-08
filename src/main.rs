@@ -17,11 +17,11 @@ fn main() {
     //give the console print a color blue
     println!("\x1b[34m");
     //
-    //println!(r" _____ _               _             _     _       _     _     _ ");
-    //println!(r"|_   _| |__   ___     / \   _ __ ___| |__ (_)_   _(_)___| |_  | |");
-    //println!(r"  | | | '_ \ / _ \   / _ \ | '__/ __| '_ \| \ \ / / / __| __| | |");
-    //println!(r"  | | | | | |  __/  / ___ \| | | (__| | | | |\ V /| \__ \ |_  |_|");
-    //println!(r"  |_| |_| |_|\___| /_/   \_\_|  \___|_| |_|_| \_/ |_|___/\__| (_)");
+    println!(r" _____ _               _             _     _       _     _     _ ");
+    println!(r"|_   _| |__   ___     / \   _ __ ___| |__ (_)_   _(_)___| |_  | |");
+    println!(r"  | | | '_ \ / _ \   / _ \ | '__/ __| '_ \| \ \ / / / __| __| | |");
+    println!(r"  | | | | | |  __/  / ___ \| | | (__| | | | |\ V /| \__ \ |_  |_|");
+    println!(r"  |_| |_| |_|\___| /_/   \_\_|  \___|_| |_|_| \_/ |_|___/\__| (_)");
 
     //give the console print a color gray
     println!("\x1b[90m");
@@ -29,7 +29,7 @@ fn main() {
     println!("\nBuild: 1.0.2");
     //println!("\n2024\n");
     println!("This tool will archive files in a folder and optionally delete them after archiving");
-    println!("Folders can be archived entirely or by file type\n");
+    println!("Folders can be archived entirely, by file type or by identifier string\n");
     println!("For more information visit: https://github.com/tkuerschner/the_archivist");
 
     //give the console print a color white
@@ -144,13 +144,14 @@ fn main() {
     println!("1 - All files in one archive");
     println!("2 - Separate archives for each file type");
     println!("3 - Select specific file types for archiving (one archive per selected file type)");
+    println!("4 - All files containing a specific string in the name");
 
     let mut option = String::new();
     std::io::stdin().read_line(&mut option).unwrap();
     option = option.trim().to_string();
 
     //let the user repeat if the input was wrong
-    while option != "1" && option != "2" && option != "3" {
+    while option != "1" && option != "2" && option != "3" && option != "4" {
         println!("-----------------------------------------------");
         println!("Invalid option, please try again");
         println!("-----------------------------------------------");
@@ -532,6 +533,121 @@ fn main() {
                 }
             }
         }
+    }
+
+    if option == "4" {
+        println!("-----------------------------------------------");
+        println!("Please enter the string: ");
+        let mut string_input = String::new();
+        std::io::stdin().read_line(&mut string_input).unwrap();
+        string_input = string_input.trim().to_string();
+        println!("String input: {:?}", string_input);
+    
+        // create a zip file for each file types from file_endings_input separated by comma, naming convention is filetype_archive_year_month_day_hour_minute.zip
+        let now = Local::now();
+        let zip_name = format!(
+            "{}_archive_{}_{}_{}_{}_{}.zip",
+            string_input,
+            now.year(),
+            now.month(),
+            now.day(),
+            now.hour(),
+            now.minute()
+        );
+        let zip_path = archive_folder.join(&zip_name);
+        let zip_file = match fs::File::create(&zip_path) {
+            Ok(file) => file,
+            Err(err) => {
+                eprintln!("Error creating zip file {}: {}", zip_path.display(), err);
+                std::process::exit(1);
+            }
+        };
+        let mut zip = ZipWriter::new(zip_file);
+        let options = FileOptions::default().compression_method(CompressionMethod::Stored);
+    
+        for entry in fs::read_dir(&folder_location).unwrap() {
+            let entry = entry.unwrap();
+            let path = entry.path();
+            if let Some(file_name) = path.file_name() {
+                if file_name.to_str().unwrap().contains(&string_input) {
+                    if let Err(err) = zip.start_file(file_name.to_str().unwrap(), options) {
+                        eprintln!("Error starting file in zip {}: {}", file_name.to_str().unwrap(), err);
+                        continue;
+                    }
+                    let mut file = match fs::File::open(&path) {
+                        Ok(file) => file,
+                        Err(err) => {
+                            eprintln!("Error opening file {}: {}", path.display(), err);
+                            continue;
+                        }
+                    };
+                    if let Err(err) = io::copy(&mut file, &mut zip) {
+                        eprintln!("Error copying file {} to zip: {}", path.display(), err);
+                    }
+                }
+            }
+        }
+        if let Err(err) = zip.finish() {
+            eprintln!("Error finishing zip file {}: {}", zip_path.display(), err);
+        }
+        println!("-----------------------------------------------");
+        println!("Archive created: \x1b[96m{}\x1b[37m", zip_path.display());
+        println!("-----------------------------------------------");
+
+        //ask the user if they want to delete the files after archiving buu only for the selected file types and add an additional warning and confirmation
+        println!("Do you want to delete the files after archiving? (y/n)");
+        let mut delete_option = String::new();
+        std::io::stdin().read_line(&mut delete_option).unwrap();
+        delete_option = delete_option.trim().to_string();
+
+          //let the user repeat if the input was wrong
+          while delete_option != "y" && delete_option != "n" {
+            println!("-----------------------------------------------");
+            println!("Invalid option, please try again");
+            println!("-----------------------------------------------");
+            println!("Do you want to delete the files after archiving? (y/n)");
+            delete_option.clear();
+            std::io::stdin().read_line(&mut delete_option).unwrap();
+            delete_option = delete_option.trim().to_string();
+        }
+
+        if delete_option == "y" {
+            println!("\x1b[31m Warning - This action is irreversible!\x1b[37m");
+            println!("-----------------------------------------------");
+            println!("Are you sure you want to delete the files? (y/n)");
+            let mut delete_confirmation = String::new();
+            std::io::stdin().read_line(&mut delete_confirmation).unwrap();
+            delete_confirmation = delete_confirmation.trim().to_string();
+
+              //let the user repeat if the input was wrong
+            while delete_option != "y" && delete_option != "n" {
+            println!("-----------------------------------------------");
+            println!("Invalid option, please try again");
+            println!("-----------------------------------------------");
+            println!("Do you want to delete the files after archiving? (y/n)");
+            delete_option.clear();
+            std::io::stdin().read_line(&mut delete_option).unwrap();
+            delete_option = delete_option.trim().to_string();
+            }
+
+            if delete_confirmation == "y" {
+                for entry in fs::read_dir(&folder_location).unwrap() {
+                    let entry = entry.unwrap();
+                    let path = entry.path();
+                    if let Some(file_name) = path.file_name() {
+                        if file_name.to_str().unwrap().contains(&string_input) {
+                            if let Err(err) = fs::remove_file(&path) {
+                                eprintln!("Error deleting file {}: {}", path.display(), err);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        
+
+
     }
 
     // if any ignore_files were found, display them
