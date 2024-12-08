@@ -26,7 +26,7 @@ fn main() {
     //give the console print a color gray
     println!("\x1b[90m");
 
-    println!("\nBuild: 1.0.2");
+    println!("\nBuild: 1.1.0");
     //println!("\n2024\n");
     println!("This tool will archive files in a folder and optionally delete them after archiving");
     println!("Folders can be archived entirely, by file type or by identifier string\n");
@@ -645,7 +645,7 @@ fn main() {
             }
         }
 
-        
+
 
 
     }
